@@ -160,14 +160,24 @@
 
         <!-- Subscribe Button -->
         <div class="text-center">
-          <button 
-            @click="handleSubscription"
-            :disabled="!selectedPayment"
-            :class="selectedPayment ? 'btn-primary' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
-            class="text-lg px-12 py-4"
-          >
-            Subscribe Now - 500 EGP
-          </button>
+          <div v-if="showStripePayment">
+            <StripePayment 
+              customer-type="individual"
+              :customer-info="customerInfo"
+              @success="handlePaymentSuccess"
+              @error="handlePaymentError"
+            />
+          </div>
+          <div v-else>
+            <button 
+              @click="handleSubscription"
+              :disabled="!selectedPayment"
+              :class="selectedPayment ? 'btn-primary' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
+              class="text-lg px-12 py-4"
+            >
+              Subscribe Now - 500 EGP
+            </button>
+          </div>
         </div>
       </div>
 
@@ -219,9 +229,16 @@
 
 <script setup>
 import { ref } from 'vue'
+import StripePayment from '~/components/StripePayment.vue'
 
 const selectedPayment = ref('')
 const matchedJobs = ref(47) // This would come from the analysis results
+const showStripePayment = ref(false)
+const customerInfo = ref({
+  id: 'user_123', // This would come from auth
+  name: 'Ahmed Hassan',
+  email: 'ahmed@example.com'
+})
 
 const handleSubscription = async () => {
   if (!selectedPayment.value) return
@@ -229,8 +246,8 @@ const handleSubscription = async () => {
   try {
     // Handle different payment methods
     if (selectedPayment.value === 'visa') {
-      // Integrate with Stripe/Paymob for card payments
-      await processCardPayment()
+      // Show Stripe payment component
+      showStripePayment.value = true
     } else if (selectedPayment.value === 'fawry') {
       // Integrate with Fawry
       await processFawryPayment()
@@ -247,13 +264,6 @@ const handleSubscription = async () => {
   }
 }
 
-const processCardPayment = async () => {
-  // Stripe/Paymob integration
-  alert('Redirecting to secure payment gateway...')
-  // Redirect to loyalty dashboard after successful payment
-  navigateTo('/dashboard/loyalty')
-}
-
 const processFawryPayment = async () => {
   alert('Fawry payment code: 12345. Pay at any Fawry outlet.')
   navigateTo('/dashboard/loyalty')
@@ -267,6 +277,16 @@ const processVodafonePayment = async () => {
 const processOfflinePayment = async () => {
   alert('Offline payment option selected. Our team will contact you within 24 hours.')
   navigateTo('/dashboard/loyalty')
+}
+
+const handlePaymentSuccess = () => {
+  // Redirect to loyalty dashboard after successful payment
+  navigateTo('/dashboard/loyalty')
+}
+
+const handlePaymentError = (error) => {
+  console.error('Payment error:', error)
+  showStripePayment.value = false
 }
 
 useHead({

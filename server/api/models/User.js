@@ -67,6 +67,22 @@ const userSchema = new mongoose.Schema({
       }
     }
   },
+  subscription: {
+    status: {
+      type: String,
+      enum: ['inactive', 'active', 'expired', 'cancelled'],
+      default: 'inactive'
+    },
+    plan: {
+      type: String,
+      enum: ['free', 'premium'],
+      default: 'free'
+    },
+    startDate: Date,
+    endDate: Date,
+    paymentIntentId: String,
+    amount: Number
+  },
   careerAnalysis: {
     personalityType: String,
     interests: [String],

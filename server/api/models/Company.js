@@ -25,6 +25,22 @@ const companySchema = new mongoose.Schema({
   verified: {
     type: Boolean,
     default: false
+  },
+  subscription: {
+    status: {
+      type: String,
+      enum: ['inactive', 'active', 'expired', 'cancelled'],
+      default: 'inactive'
+    },
+    plan: {
+      type: String,
+      enum: ['trial', 'business'],
+      default: 'trial'
+    },
+    startDate: Date,
+    endDate: Date,
+    paymentIntentId: String,
+    amount: Number
   }
 }, {
   timestamps: true

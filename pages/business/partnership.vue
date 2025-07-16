@@ -130,7 +130,7 @@
                 <div class="text-center">
                   <h4 class="font-semibold text-gray-900 mb-2">1-Month Trial</h4>
                   <div class="text-2xl font-bold text-primary-600 mb-2">
-                    {{ getTrialPrice() }} EGP
+                    {{ getTrialPrice }} EGP
                   </div>
                   <p class="text-sm text-gray-600">Perfect for testing our services</p>
                 </div>
@@ -145,7 +145,7 @@
                 <div class="text-center">
                   <h4 class="font-semibold text-gray-900 mb-2">Annual Subscription</h4>
                   <div class="text-2xl font-bold text-primary-600 mb-2">
-                    {{ getAnnualPrice() }} EGP
+                    {{ getAnnualPrice }} EGP
                   </div>
                   <p class="text-sm text-gray-600">Best value with discounted rate</p>
                   <div class="text-xs text-green-600 font-medium mt-1">Save 20%</div>
@@ -180,9 +180,19 @@
 
           <!-- Submit Button -->
           <div class="pt-4">
-            <button type="submit" class="btn-primary w-full text-lg py-3">
-              Submit & Schedule Call
-            </button>
+            <div v-if="showStripePayment">
+              <StripePayment 
+                customer-type="company"
+                :customer-info="companyInfo"
+                @success="handlePaymentSuccess"
+                @error="handlePaymentError"
+              />
+            </div>
+            <div v-else>
+              <button type="submit" class="btn-primary w-full text-lg py-3">
+                Submit & Schedule Call
+              </button>
+            </div>
           </div>
         </form>
       </div>
@@ -192,6 +202,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import StripePayment from '~/components/StripePayment.vue'
 
 const form = ref({
   companyName: '',
@@ -204,6 +215,14 @@ const form = ref({
   selectedPlan: '',
   contactPerson: '',
   email: ''
+})
+
+const showStripePayment = ref(false)
+const companyInfo = ref({
+  id: 'company_123', // This would be generated after form submission
+  name: '',
+  email: '',
+  companyName: ''
 })
 
 const getTrialPrice = computed(() => {
@@ -241,12 +260,30 @@ const handleSubmit = async () => {
     // Submit partnership form
     console.log('Partnership form submitted:', form.value)
     
-    // Redirect to thank you page
-    navigateTo('/business/thank-you')
+    // Set company info for payment
+    companyInfo.value = {
+      id: 'company_' + Date.now(), // Generate temporary ID
+      name: form.value.contactPerson,
+      email: form.value.email,
+      companyName: form.value.companyName
+    }
+    
+    // Show Stripe payment for card payments
+    showStripePayment.value = true
   } catch (error) {
     console.error('Submission failed:', error)
     alert('Submission failed. Please try again.')
   }
+}
+
+const handlePaymentSuccess = () => {
+  // Redirect to thank you page after successful payment
+  navigateTo('/business/thank-you')
+}
+
+const handlePaymentError = (error) => {
+  console.error('Payment error:', error)
+  showStripePayment.value = false
 }
 
 useHead({

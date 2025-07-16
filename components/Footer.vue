@@ -36,10 +36,10 @@
         <div>
           <h3 class="font-semibold mb-4">Quick Links</h3>
           <ul class="space-y-2 text-gray-300">
-            <li><a href="#" class="hover:text-primary-400 transition-colors duration-200">Find Jobs</a></li>
-            <li><a href="#" class="hover:text-primary-400 transition-colors duration-200">Browse Companies</a></li>
-            <li><a href="#" class="hover:text-primary-400 transition-colors duration-200">Career Resources</a></li>
-            <li><a href="#" class="hover:text-primary-400 transition-colors duration-200">Success Stories</a></li>
+            <li><NuxtLink to="/jobs" class="hover:text-primary-400 transition-colors duration-200">Find Jobs</NuxtLink></li>
+            <li><NuxtLink to="/companies" class="hover:text-primary-400 transition-colors duration-200">Browse Companies</NuxtLink></li>
+            <li><NuxtLink to="/resources" class="hover:text-primary-400 transition-colors duration-200">Career Resources</NuxtLink></li>
+            <li><NuxtLink to="/about" class="hover:text-primary-400 transition-colors duration-200">About Us</NuxtLink></li>
           </ul>
         </div>
 
@@ -48,8 +48,8 @@
           <h3 class="font-semibold mb-4">Support</h3>
           <ul class="space-y-2 text-gray-300">
             <li><NuxtLink to="/faq" class="hover:text-primary-400 transition-colors duration-200">FAQ</NuxtLink></li>
-            <li><a href="#" class="hover:text-primary-400 transition-colors duration-200">Contact Us</a></li>
-            <li><NuxtLink to="/terms" class="hover:text-primary-400 transition-colors duration-200">Privacy Policy</NuxtLink></li>
+            <li><NuxtLink to="/contact" class="hover:text-primary-400 transition-colors duration-200">Contact Us</NuxtLink></li>
+            <li><NuxtLink to="/privacy" class="hover:text-primary-400 transition-colors duration-200">Privacy Policy</NuxtLink></li>
             <li><NuxtLink to="/terms" class="hover:text-primary-400 transition-colors duration-200">Terms of Service</NuxtLink></li>
           </ul>
         </div>

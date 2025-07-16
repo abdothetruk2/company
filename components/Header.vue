@@ -14,10 +14,10 @@
 
         <!-- Navigation -->
         <nav class="hidden md:flex space-x-8">
-          <a href="#jobs" class="text-gray-600 hover:text-primary-600 transition-colors duration-200">Find Jobs</a>
-          <a href="#companies" class="text-gray-600 hover:text-primary-600 transition-colors duration-200">Companies</a>
-          <a href="#resources" class="text-gray-600 hover:text-primary-600 transition-colors duration-200">Resources</a>
-          <a href="#about" class="text-gray-600 hover:text-primary-600 transition-colors duration-200">About</a>
+          <NuxtLink to="/jobs" class="text-gray-600 hover:text-primary-600 transition-colors duration-200">Find Jobs</NuxtLink>
+          <NuxtLink to="/companies" class="text-gray-600 hover:text-primary-600 transition-colors duration-200">Companies</NuxtLink>
+          <NuxtLink to="/resources" class="text-gray-600 hover:text-primary-600 transition-colors duration-200">Resources</NuxtLink>
+          <NuxtLink to="/about" class="text-gray-600 hover:text-primary-600 transition-colors duration-200">About</NuxtLink>
         </nav>
 
         <!-- Auth buttons -->
@@ -39,10 +39,10 @@
       <!-- Mobile menu -->
       <div v-if="mobileMenuOpen" class="md:hidden py-4 border-t border-gray-200">
         <div class="space-y-2">
-          <a href="#jobs" class="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors duration-200">Find Jobs</a>
-          <a href="#companies" class="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors duration-200">Companies</a>
-          <a href="#resources" class="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors duration-200">Resources</a>
-          <a href="#about" class="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors duration-200">About</a>
+          <NuxtLink to="/jobs" class="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors duration-200">Find Jobs</NuxtLink>
+          <NuxtLink to="/companies" class="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors duration-200">Companies</NuxtLink>
+          <NuxtLink to="/resources" class="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors duration-200">Resources</NuxtLink>
+          <NuxtLink to="/about" class="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors duration-200">About</NuxtLink>
         </div>
       </div>
     </div>
