@@ -22,8 +22,23 @@
 
         <!-- Auth buttons -->
         <div class="flex items-center space-x-4">
-          <button class="text-gray-600 hover:text-primary-600 transition-colors duration-200">Sign In</button>
-          <button class="btn-primary">Sign Up</button>
+          <div v-if="!isAuthenticated" class="flex items-center space-x-4">
+            <NuxtLink to="/auth/signin" class="text-gray-600 hover:text-primary-600 transition-colors duration-200">Sign In</NuxtLink>
+            <NuxtLink to="/auth/signup" class="btn-primary">Sign Up</NuxtLink>
+          </div>
+          <div v-else class="flex items-center space-x-4">
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
+                <span class="text-white font-bold text-sm">{{ user?.name?.charAt(0) || 'U' }}</span>
+              </div>
+              <span class="ml-2 text-sm text-gray-700">{{ user?.name }}</span>
+            </div>
+            <button @click="handleLogout" class="text-gray-600 hover:text-red-600 transition-colors duration-200">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <!-- Mobile menu button -->
@@ -50,7 +65,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const mobileMenuOpen = ref(false)
+const { user, isAuthenticated, logout, initAuth } = useAuth()
+
+onMounted(() => {
+  initAuth()
+})
+
+const handleLogout = () => {
+  logout()
+}
 </script>

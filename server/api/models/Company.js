@@ -14,6 +14,10 @@ const companySchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  password: {
+    type: String,
+    required: false // Optional for now, can be added later
+  },
   industry: {
     type: String,
     required: true
