@@ -86,8 +86,8 @@
 
           <div class="flex items-center justify-between">
             <div class="text-primary-600 font-semibold">{{ company.openings }} openings</div>
-            <button class="btn-primary text-sm">View Jobs</button>
-          </div>
+<NuxtLink :to="`/company/${company.id}/jobs`" class="btn-primary text-sm">View Jobs</NuxtLink>
+            </div>
 
           <!-- Company Stats -->
           <div class="mt-4 pt-4 border-t border-gray-200">

@@ -1,7 +1,6 @@
 import Stripe from 'stripe'
-import connectDB from '../utils/db.js'
+import { connectDB } from '../utils/db.js'
 import User from '../models/User.js'
-import Company from '../models/Company.js'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
@@ -22,17 +21,6 @@ export default defineEventHandler(async (event) => {
           subscription: {
             status: 'active',
             plan: 'premium',
-            startDate: new Date(),
-            endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year
-            paymentIntentId: paymentIntentId,
-            amount: paymentIntent.amount / 100
-          }
-        })
-      } else if (customerType === 'company') {
-        await Company.findByIdAndUpdate(customerId, {
-          subscription: {
-            status: 'active',
-            plan: 'business',
             startDate: new Date(),
             endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year
             paymentIntentId: paymentIntentId,

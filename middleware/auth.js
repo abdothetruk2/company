@@ -1,25 +1,25 @@
-export default defineNuxtRouteMiddleware((to, from) => {
-  // Check if running on client side
-  if (process.client) {
-    const token = localStorage.getItem('authToken')
-    const user = localStorage.getItem('user')
-    
-    // Protected routes that require authentication
-    const protectedRoutes = ['/dashboard', '/subscription', '/results']
-    const isProtectedRoute = protectedRoutes.some(route => to.path.startsWith(route))
-    
-    if (isProtectedRoute && !token) {
-      return navigateTo('/auth/signin')
-    }
-    
-    // Redirect authenticated users away from auth pages
-    if (token && (to.path.startsWith('/auth/') || to.path === '/register/individual')) {
-      const userData = user ? JSON.parse(user) : null
-      if (userData?.type === 'business') {
-        return navigateTo('/business/dashboard')
-      } else {
-        return navigateTo('/dashboard/assessments')
+export default defineNuxtRouteMiddleware(async (to, from) => {
+  // Skip middleware on server-side rendering
+  if (process.server) return
+  
+  const token = useCookie('jwt')
+  
+  // If no token, redirect to login
+  if (!token.value) {
+    return navigateTo('/auth/login')
+  }
+  
+  // Verify token is valid by making a quick API call
+  try {
+    await $fetch('/api/auth/verify', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token.value}`
       }
-    }
+    })
+  } catch (error) {
+    // Token is invalid, clear it and redirect to login
+    token.value = null
+    return navigateTo('/auth/login')
   }
 })

@@ -22,23 +22,16 @@
 
         <!-- Auth buttons -->
         <div class="flex items-center space-x-4">
-          <div v-if="!isAuthenticated" class="flex items-center space-x-4">
-            <NuxtLink to="/auth/signin" class="text-gray-600 hover:text-primary-600 transition-colors duration-200">Sign In</NuxtLink>
-            <NuxtLink to="/auth/signup" class="btn-primary">Sign Up</NuxtLink>
-          </div>
-          <div v-else class="flex items-center space-x-4">
-            <div class="flex items-center">
-              <div class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
-                <span class="text-white font-bold text-sm">{{ user?.name?.charAt(0) || 'U' }}</span>
-              </div>
-              <span class="ml-2 text-sm text-gray-700">{{ user?.name }}</span>
+          <template v-if="!isAuthenticated">
+            <NuxtLink to="/login" class="text-gray-600 hover:text-primary-600 transition-colors duration-200">Sign In</NuxtLink>
+            <NuxtLink to="/register" class="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-200">Get Started</NuxtLink>
+          </template>
+          <template v-else>
+            <div class="flex items-center space-x-4">
+              <span class="text-gray-700">Welcome, {{ user?.name }}</span>
+              <button @click="logout" class="text-gray-600 hover:text-primary-600 transition-colors duration-200">Logout</button>
             </div>
-            <button @click="handleLogout" class="text-gray-600 hover:text-red-600 transition-colors duration-200">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-            </button>
-          </div>
+          </template>
         </div>
 
         <!-- Mobile menu button -->
@@ -58,6 +51,18 @@
           <NuxtLink to="/companies" class="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors duration-200">Companies</NuxtLink>
           <NuxtLink to="/resources" class="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors duration-200">Resources</NuxtLink>
           <NuxtLink to="/about" class="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors duration-200">About</NuxtLink>
+          
+          <!-- Mobile auth buttons -->
+          <div class="pt-4 border-t border-gray-200">
+            <template v-if="!isAuthenticated">
+              <NuxtLink to="/login" class="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors duration-200">Sign In</NuxtLink>
+              <NuxtLink to="/register" class="block px-3 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors duration-200 mx-3">Get Started</NuxtLink>
+            </template>
+            <template v-else>
+              <div class="px-3 py-2 text-gray-700">Welcome, {{ user?.name }}</div>
+              <button @click="logout" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors duration-200">Logout</button>
+            </template>
+          </div>
         </div>
       </div>
     </div>
@@ -65,16 +70,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 
 const mobileMenuOpen = ref(false)
-const { user, isAuthenticated, logout, initAuth } = useAuth()
 
-onMounted(() => {
-  initAuth()
-})
-
-const handleLogout = () => {
-  logout()
-}
+// Use the authentication composable
+const { isAuthenticated, user, logout } = useAuth()
 </script>

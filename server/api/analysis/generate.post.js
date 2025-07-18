@@ -1,4 +1,4 @@
-import connectDB from '../utils/db.js'
+import { connectDB } from '../utils/db.js'
 import User from '../models/User.js'
 
 // AI-powered course recommendations based on assessment results
@@ -118,69 +118,183 @@ const generateCourseRecommendations = (personalityType, interests, skillsToImpro
   return recommendations.slice(0, 6) // Return top 6 recommendations
 }
 
-const generateCareerAnalysis = (assessments) => {
+function generateCareerAnalysis(assessments) {
   const { personality, knowledge, softSkills } = assessments
 
-  // Determine personality type and interests
-  const personalityType = personality.results?.mbtiType || 'ENFP'
-  const riasecCode = personality.results?.riasecCode || 'SAE'
-  
-  // Map RIASEC to interests
-  const riasecMapping = {
-    'R': 'Realistic - Hands-on, practical work',
-    'I': 'Investigative - Research and analysis',
-    'A': 'Artistic - Creative and expressive work',
-    'S': 'Social - Helping and teaching others',
-    'E': 'Enterprising - Leadership and business',
-    'C': 'Conventional - Organized and detail-oriented'
-  }
-  
-  const interests = riasecCode.split('').map(code => riasecMapping[code]).filter(Boolean)
+  // Extract personality data
+  const personalityType = personality.results?.mbtiType || 'Unknown'
+  const riasecCode = personality.results?.riasecCode || 'Unknown'
+  const personalityTraits = personality.results?.personalityTraits || []
 
-  // Determine suitable fields based on personality and interests
-  const fieldMapping = {
-    'INTJ': ['Technology', 'Engineering', 'Research', 'Strategy Consulting'],
-    'ENFP': ['Marketing', 'Human Resources', 'Creative Industries', 'Education'],
-    'ISTJ': ['Finance', 'Operations', 'Quality Assurance', 'Administration'],
-    'ESTP': ['Sales', 'Business Development', 'Event Management', 'Sports'],
-    'default': ['Business', 'Technology', 'Healthcare', 'Education']
-  }
+  // Extract knowledge data
+  const technicalSkills = knowledge.results?.technicalSkills || []
+  const domains = knowledge.results?.domains || []
 
-  const suitableFields = fieldMapping[personalityType] || fieldMapping['default']
+  // Extract soft skills data
+  const softSkillsResults = softSkills.results || {}
 
-  // Identify skills to improve based on soft skills assessment
-  const skillsToImprove = []
-  if (softSkills.results) {
-    const skills = softSkills.results
-    if (skills.communication < 7) skillsToImprove.push('Communication')
-    if (skills.leadership < 7) skillsToImprove.push('Leadership')
-    if (skills.problemSolving < 7) skillsToImprove.push('Problem Solving')
-    if (skills.teamwork < 7) skillsToImprove.push('Teamwork')
-    if (skills.adaptability < 7) skillsToImprove.push('Adaptability')
-  }
-
-  // Add technical skills if knowledge assessment shows gaps
-  if (knowledge.results && knowledge.results.technicalSkills) {
-    const lowTechSkills = knowledge.results.technicalSkills
-      .filter(skill => skill.level < 7)
-      .map(skill => skill.skill)
-    
-    if (lowTechSkills.length > 0) {
-      skillsToImprove.push('Technical Skills')
-    }
-  }
-
-  // Generate AI-powered course recommendations
-  const recommendedCourses = generateCourseRecommendations(personalityType, interests, skillsToImprove)
+  // Generate career recommendations based on personality and skills
+  const suitableFields = generateSuitableFields(personalityType, riasecCode, domains)
+  const skillsToImprove = generateSkillsToImprove(softSkillsResults, technicalSkills)
+  const recommendedCourses = generateRecommendedCourses(skillsToImprove, domains)
 
   return {
     personalityType,
-    interests,
+    interests: personalityTraits,
     suitableFields,
     skillsToImprove,
     recommendedCourses,
     generatedAt: new Date()
   }
+}
+
+function generateSuitableFields(personalityType, riasecCode, domains) {
+  const fieldMappings = {
+    'INTJ': ['Software Engineering', 'Data Science', 'Research', 'Strategic Planning'],
+    'ENFP': ['Marketing', 'Human Resources', 'Creative Writing', 'Counseling'],
+    'ISTJ': ['Accounting', 'Project Management', 'Quality Assurance', 'Operations'],
+    'ESTP': ['Sales', 'Business Development', 'Event Management', 'Entrepreneurship']
+  }
+
+  const riasecMappings = {
+    'R': ['Engineering', 'Construction', 'Agriculture', 'Technical Support'],
+    'I': ['Research', 'Data Analysis', 'Laboratory Work', 'Academic'],
+    'A': ['Design', 'Creative Arts', 'Writing', 'Media Production'],
+    'S': ['Healthcare', 'Education', 'Social Work', 'Customer Service'],
+    'E': ['Management', 'Sales', 'Politics', 'Business Leadership'],
+    'C': ['Accounting', 'Administration', 'Data Entry', 'Banking']
+  }
+
+  let fields = []
+  
+  // Add fields based on personality type
+  if (fieldMappings[personalityType]) {
+    fields.push(...fieldMappings[personalityType])
+  }
+
+  // Add fields based on RIASEC code
+  if (riasecCode && riasecCode.length > 0) {
+    const primaryCode = riasecCode[0]
+    if (riasecMappings[primaryCode]) {
+      fields.push(...riasecMappings[primaryCode])
+    }
+  }
+
+  // Add fields based on knowledge domains
+  fields.push(...domains)
+
+  // Remove duplicates and return top 6
+  return [...new Set(fields)].slice(0, 6)
+}
+
+function generateSkillsToImprove(softSkillsResults, technicalSkills) {
+  const skillsToImprove = []
+
+  // Check soft skills that need improvement (below 7/10)
+  Object.entries(softSkillsResults).forEach(([skill, score]) => {
+    if (typeof score === 'number' && score < 7) {
+      skillsToImprove.push(skill.charAt(0).toUpperCase() + skill.slice(1))
+    }
+  })
+
+  // Check technical skills that need improvement (below level 3)
+  technicalSkills.forEach(skill => {
+    if (skill.level < 3) {
+      skillsToImprove.push(skill.skill)
+    }
+  })
+
+  return skillsToImprove.slice(0, 5)
+}
+
+function generateRecommendedCourses(skillsToImprove, domains) {
+  const courseDatabase = [
+    {
+      title: 'Communication Skills Masterclass',
+      provider: 'Coursera',
+      url: 'https://coursera.org/communication',
+      difficulty: 'Beginner',
+      duration: '4 weeks',
+      description: 'Improve your verbal and written communication skills',
+      skills: ['Communication']
+    },
+    {
+      title: 'Leadership and Team Management',
+      provider: 'edX',
+      url: 'https://edx.org/leadership',
+      difficulty: 'Intermediate',
+      duration: '6 weeks',
+      description: 'Develop leadership skills and learn to manage teams effectively',
+      skills: ['Leadership', 'Teamwork']
+    },
+    {
+      title: 'Problem Solving Techniques',
+      provider: 'Udemy',
+      url: 'https://udemy.com/problem-solving',
+      difficulty: 'Beginner',
+      duration: '3 weeks',
+      description: 'Learn systematic approaches to problem solving',
+      skills: ['Problem Solving', 'ProblemSolving']
+    },
+    {
+      title: 'JavaScript Fundamentals',
+      provider: 'freeCodeCamp',
+      url: 'https://freecodecamp.org/javascript',
+      difficulty: 'Beginner',
+      duration: '8 weeks',
+      description: 'Master the basics of JavaScript programming',
+      skills: ['JavaScript', 'Programming', 'Web Development']
+    },
+    {
+      title: 'Data Science with Python',
+      provider: 'Coursera',
+      url: 'https://coursera.org/data-science-python',
+      difficulty: 'Intermediate',
+      duration: '12 weeks',
+      description: 'Learn data analysis and machine learning with Python',
+      skills: ['Python', 'Data Science', 'Machine Learning']
+    },
+    {
+      title: 'Digital Marketing Fundamentals',
+      provider: 'Google Digital Garage',
+      url: 'https://learndigital.withgoogle.com',
+      difficulty: 'Beginner',
+      duration: '6 weeks',
+      description: 'Learn the basics of digital marketing and online advertising',
+      skills: ['Marketing', 'Digital Marketing']
+    }
+  ]
+
+  const recommendedCourses = []
+
+  // Find courses that match skills to improve
+  skillsToImprove.forEach(skill => {
+    const matchingCourses = courseDatabase.filter(course => 
+      course.skills.some(courseSkill => 
+        courseSkill.toLowerCase().includes(skill.toLowerCase()) ||
+        skill.toLowerCase().includes(courseSkill.toLowerCase())
+      )
+    )
+    recommendedCourses.push(...matchingCourses)
+  })
+
+  // Find courses that match domains
+  domains.forEach(domain => {
+    const matchingCourses = courseDatabase.filter(course =>
+      course.skills.some(courseSkill =>
+        courseSkill.toLowerCase().includes(domain.toLowerCase()) ||
+        domain.toLowerCase().includes(courseSkill.toLowerCase())
+      )
+    )
+    recommendedCourses.push(...matchingCourses)
+  })
+
+  // Remove duplicates and return top 5
+  const uniqueCourses = recommendedCourses.filter((course, index, self) =>
+    index === self.findIndex(c => c.title === course.title)
+  )
+
+  return uniqueCourses.slice(0, 5)
 }
 
 export default defineEventHandler(async (event) => {

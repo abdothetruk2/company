@@ -1,0 +1,409 @@
+<template>
+  <div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-xl">PG</span>
+            </div>
+            <h1 class="ml-3 text-xl font-bold text-gray-900">ProGrowth</h1>
+          </div>
+          <div class="flex items-center space-x-4">
+            <NuxtLink to="/" class="text-gray-600 hover:text-gray-900">← Back to Home</NuxtLink>
+            <NuxtLink to="/jobs" class="btn-secondary">Browse Jobs</NuxtLink>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Loading State -->
+      <div v-if="loading" class="flex justify-center items-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      </div>
+
+      <!-- Error State -->
+      <div v-else-if="error" class="text-center py-12">
+        <div class="text-red-600 mb-4">
+          <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Unable to load profile</h3>
+        <p class="text-gray-600 mb-4">{{ error }}</p>
+        <button @click="fetchProfile" class="btn-primary">Try Again</button>
+      </div>
+
+      <!-- Profile Content -->
+      <div v-else-if="userProfile" class="space-y-8">
+        <!-- Profile Header -->
+        <div class="card p-6">
+          <div class="flex items-center space-x-6">
+            <div class="w-20 h-20 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center">
+              <span class="text-white font-bold text-2xl">{{ userProfile.name.charAt(0).toUpperCase() }}</span>
+            </div>
+            <div class="flex-1">
+              <h1 class="text-2xl font-bold text-gray-900">{{ userProfile.name }}</h1>
+              <p class="text-gray-600">{{ userProfile.email }}</p>
+              <div class="mt-2 flex items-center space-x-4 text-sm text-gray-500">
+                <span>{{ userProfile.age }} years old</span>
+                <span>•</span>
+                <span class="capitalize">{{ userProfile.gender }}</span>
+                <span v-if="userProfile.university">•</span>
+                <span v-if="userProfile.university">{{ userProfile.university }}</span>
+              </div>
+            </div>
+            <button @click="editMode = !editMode" class="btn-primary">
+              {{ editMode ? 'Cancel' : 'Edit Profile' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Edit Profile Form -->
+        <div v-if="editMode" class="card p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-6">Edit Profile</h2>
+          <form @submit.prevent="updateProfile" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                <input 
+                  type="text" 
+                  v-model="editForm.name"
+                  class="input-field"
+                  required
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Age</label>
+                <input 
+                  type="number" 
+                  v-model="editForm.age"
+                  class="input-field"
+                  min="16"
+                  max="100"
+                  required
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+                <select v-model="editForm.gender" class="input-field" required>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">University</label>
+                <input 
+                  type="text" 
+                  v-model="editForm.university"
+                  class="input-field"
+                  placeholder="Your university (optional)"
+                />
+              </div>
+            </div>
+            <div class="flex justify-end space-x-4">
+              <button type="button" @click="editMode = false" class="btn-secondary">
+                Cancel
+              </button>
+              <button type="submit" :disabled="updating" class="btn-primary">
+                {{ updating ? 'Updating...' : 'Update Profile' }}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Subscription Status -->
+        <div class="card p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Subscription Status</h2>
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="text-lg font-medium capitalize">{{ userProfile.subscription.plan }} Plan</span>
+                <span 
+                  :class="getSubscriptionStatusClass(userProfile.subscription.status)"
+                  class="px-2 py-1 rounded-full text-xs font-medium"
+                >
+                  {{ userProfile.subscription.status }}
+                </span>
+              </div>
+              <p class="text-gray-600 text-sm mt-1">
+                {{ getSubscriptionDescription(userProfile.subscription) }}
+              </p>
+            </div>
+            <div v-if="userProfile.subscription.plan === 'free'">
+              <NuxtLink to="/pricing" class="btn-primary">
+                Upgrade to Premium
+              </NuxtLink>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assessment Progress -->
+        <div class="card p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-6">Assessment Progress</h2>
+          <div class="space-y-6">
+            <!-- Personality Assessment -->
+            <div class="border rounded-lg p-4">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-medium text-gray-900">Personality Assessment</h3>
+                <span 
+                  :class="userProfile.assessments.personality.completed ? 'text-green-600' : 'text-yellow-600'"
+                  class="text-sm font-medium"
+                >
+                  {{ userProfile.assessments.personality.completed ? 'Completed' : 'In Progress' }}
+                </span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
+                <div 
+                  class="bg-primary-600 h-2 rounded-full transition-all duration-300"
+                  :style="{ width: userProfile.assessments.personality.progress + '%' }"
+                ></div>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">{{ userProfile.assessments.personality.progress }}% Complete</span>
+                <NuxtLink 
+                  :to="userProfile.assessments.personality.completed ? '/assessments/personality/results' : '/assessments/personality'"
+                  class="text-primary-600 hover:text-primary-700 text-sm font-medium"
+                >
+                  {{ userProfile.assessments.personality.completed ? 'View Results' : 'Continue' }}
+                </NuxtLink>
+              </div>
+            </div>
+
+            <!-- Knowledge Assessment -->
+            <div class="border rounded-lg p-4">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-medium text-gray-900">Knowledge Assessment</h3>
+                <span 
+                  :class="userProfile.assessments.knowledge.completed ? 'text-green-600' : 'text-yellow-600'"
+                  class="text-sm font-medium"
+                >
+                  {{ userProfile.assessments.knowledge.completed ? 'Completed' : 'In Progress' }}
+                </span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
+                <div 
+                  class="bg-primary-600 h-2 rounded-full transition-all duration-300"
+                  :style="{ width: userProfile.assessments.knowledge.progress + '%' }"
+                ></div>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">{{ userProfile.assessments.knowledge.progress }}% Complete</span>
+                <NuxtLink 
+                  :to="userProfile.assessments.knowledge.completed ? '/assessments/knowledge/results' : '/assessments/knowledge'"
+                  class="text-primary-600 hover:text-primary-700 text-sm font-medium"
+                >
+                  {{ userProfile.assessments.knowledge.completed ? 'View Results' : 'Continue' }}
+                </NuxtLink>
+              </div>
+            </div>
+
+            <!-- Soft Skills Assessment -->
+            <div class="border rounded-lg p-4">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-medium text-gray-900">Soft Skills Assessment</h3>
+                <span 
+                  :class="userProfile.assessments.softSkills.completed ? 'text-green-600' : 'text-yellow-600'"
+                  class="text-sm font-medium"
+                >
+                  {{ userProfile.assessments.softSkills.completed ? 'Completed' : 'In Progress' }}
+                </span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
+                <div 
+                  class="bg-primary-600 h-2 rounded-full transition-all duration-300"
+                  :style="{ width: userProfile.assessments.softSkills.progress + '%' }"
+                ></div>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">{{ userProfile.assessments.softSkills.progress }}% Complete</span>
+                <NuxtLink 
+                  :to="userProfile.assessments.softSkills.completed ? '/assessments/soft-skills/results' : '/assessments/soft-skills'"
+                  class="text-primary-600 hover:text-primary-700 text-sm font-medium"
+                >
+                  {{ userProfile.assessments.softSkills.completed ? 'View Results' : 'Continue' }}
+                </NuxtLink>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Career Analysis -->
+        <div v-if="userProfile.careerAnalysis" class="card p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-6">Career Analysis</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 class="font-medium text-gray-900 mb-2">Personality Type</h3>
+              <p class="text-gray-600">{{ userProfile.careerAnalysis.personalityType }}</p>
+            </div>
+            <div>
+              <h3 class="font-medium text-gray-900 mb-2">Interests</h3>
+              <div class="flex flex-wrap gap-2">
+                <span 
+                  v-for="interest in userProfile.careerAnalysis.interests" 
+                  :key="interest"
+                  class="px-2 py-1 bg-primary-50 text-primary-700 rounded text-sm"
+                >
+                  {{ interest }}
+                </span>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-medium text-gray-900 mb-2">Suitable Fields</h3>
+              <div class="flex flex-wrap gap-2">
+                <span 
+                  v-for="field in userProfile.careerAnalysis.suitableFields" 
+                  :key="field"
+                  class="px-2 py-1 bg-green-50 text-green-700 rounded text-sm"
+                >
+                  {{ field }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted, computed } from 'vue'
+
+// Meta
+definePageMeta({
+  middleware: 'auth'
+})
+
+// Reactive data
+const userProfile = ref(null)
+const loading = ref(true)
+const error = ref(null)
+const editMode = ref(false)
+const updating = ref(false)
+
+const editForm = ref({
+  name: '',
+  age: '',
+  gender: '',
+  university: ''
+})
+
+// Fetch user profile from database
+const fetchProfile = async () => {
+  try {
+    loading.value = true
+    error.value = null
+    
+    const { data } = await $fetch('/api/profile', {
+      method: 'GET',
+      credentials: 'include'
+    })
+    
+    userProfile.value = data
+    
+    // Initialize edit form with current data
+    editForm.value = {
+      name: data.name,
+      age: data.age,
+      gender: data.gender,
+      university: data.university || ''
+    }
+    
+  } catch (err) {
+    console.error('Error fetching profile:', err)
+    error.value = err.data?.message || 'Failed to load profile'
+  } finally {
+    loading.value = false
+  }
+}
+
+// Update profile in database
+const updateProfile = async () => {
+  try {
+    updating.value = true
+    
+    const { data } = await $fetch('/api/profile', {
+      method: 'PUT',
+      body: editForm.value,
+      credentials: 'include'
+    })
+    
+    userProfile.value = data
+    editMode.value = false
+    
+    // Show success message
+    await nextTick()
+    showNotification('Profile updated successfully!', 'success')
+    
+  } catch (err) {
+    console.error('Error updating profile:', err)
+    showNotification(err.data?.message || 'Failed to update profile', 'error')
+  } finally {
+    updating.value = false
+  }
+}
+
+// Helper functions
+const getSubscriptionStatusClass = (status) => {
+  const classes = {
+    active: 'bg-green-100 text-green-800',
+    inactive: 'bg-gray-100 text-gray-800',
+    expired: 'bg-red-100 text-red-800',
+    cancelled: 'bg-yellow-100 text-yellow-800'
+  }
+  return classes[status] || 'bg-gray-100 text-gray-800'
+}
+
+const getSubscriptionDescription = (subscription) => {
+  if (subscription.status === 'active' && subscription.endDate) {
+    const endDate = new Date(subscription.endDate).toLocaleDateString()
+    return `Active until ${endDate}`
+  }
+  if (subscription.status === 'expired') {
+    return 'Your subscription has expired'
+  }
+  if (subscription.status === 'cancelled') {
+    return 'Your subscription has been cancelled'
+  }
+  return 'No active subscription'
+}
+
+const showNotification = (message, type = 'info') => {
+  // You can implement a toast notification system here
+  // For now, we'll use a simple alert
+  if (type === 'success') {
+    alert(`✅ ${message}`)
+  } else if (type === 'error') {
+    alert(`❌ ${message}`)
+  } else {
+    alert(message)
+  }
+}
+
+// Lifecycle
+onMounted(() => {
+  fetchProfile()
+})
+</script>
+
+<style scoped>
+.card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-200;
+}
+
+.input-field {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500;
+}
+
+.btn-primary {
+  @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500;
+}
+</style>

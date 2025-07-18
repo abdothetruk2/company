@@ -1,0 +1,7 @@
+<script setup>
+const { requireAuth } = useAdminAuth()
+
+onMounted(async () => {
+  await requireAuth()
+})
+</script>

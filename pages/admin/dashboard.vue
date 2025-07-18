@@ -1,440 +1,505 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <div class="bg-white shadow-sm border-b">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <div class="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center">
-              <span class="text-white font-bold text-xl">PG</span>
-            </div>
-            <h1 class="ml-3 text-xl font-bold text-gray-900">ProGrowth Admin</h1>
-          </div>
-          <div class="flex items-center space-x-4">
-            <div class="text-sm text-gray-600">Welcome, Admin</div>
-            <button @click="logout" class="text-red-600 hover:text-red-700">
+  <AdminSidebar>
+    <!-- Top Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
+          <p class="text-gray-600">Welcome back, Admin</p>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="relative">
+            <button class="p-2 text-gray-400 hover:text-gray-600 relative">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6zM16 3h5v5h-5V3zM4 3h6v6H4V3z" />
               </svg>
+              <span class="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
             </button>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Dashboard Stats -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div class="card p-6">
-          <div class="flex items-center">
-            <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm text-gray-600">Total Students</p>
-              <p class="text-2xl font-bold text-gray-900">{{ stats.totalStudents }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card p-6">
-          <div class="flex items-center">
-            <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0h2M7 7h10M7 11h10M7 15h10" />
-              </svg>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm text-gray-600">Active Companies</p>
-              <p class="text-2xl font-bold text-gray-900">{{ stats.activeCompanies }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card p-6">
-          <div class="flex items-center">
-            <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-              </svg>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm text-gray-600">Monthly Revenue</p>
-              <p class="text-2xl font-bold text-gray-900">{{ stats.monthlyRevenue }} EGP</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card p-6">
-          <div class="flex items-center">
-            <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm text-gray-600">Assessments</p>
-              <p class="text-2xl font-bold text-gray-900">{{ stats.totalAssessments }}</p>
-            </div>
+          <div class="text-sm text-gray-500">
+            Last updated: {{ new Date().toLocaleString() }}
           </div>
         </div>
       </div>
+    </header>
 
-      <!-- Charts Section -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+      <!-- Quick Stats Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                </svg>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Total Users</dt>
+                <dd class="flex items-baseline">
+                  <div class="text-2xl font-semibold text-gray-900">{{ stats.totalUsers.toLocaleString() }}</div>
+                  <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                    <svg class="self-center flex-shrink-0 h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="sr-only">Increased by</span>
+                    12%
+                  </div>
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0h2M7 7h10M7 11h10M7 15h10" />
+                </svg>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Active Companies</dt>
+                <dd class="flex items-baseline">
+                  <div class="text-2xl font-semibold text-gray-900">{{ stats.activeCompanies.toLocaleString() }}</div>
+                  <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                    <svg class="self-center flex-shrink-0 h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="sr-only">Increased by</span>
+                    8%
+                  </div>
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                </svg>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Monthly Revenue</dt>
+                <dd class="flex items-baseline">
+                  <div class="text-2xl font-semibold text-gray-900">{{ stats.monthlyRevenue.toLocaleString() }} EGP</div>
+                  <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                    <svg class="self-center flex-shrink-0 h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="sr-only">Increased by</span>
+                    25%
+                  </div>
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Assessments</dt>
+                <dd class="flex items-baseline">
+                  <div class="text-2xl font-semibold text-gray-900">{{ stats.totalAssessments.toLocaleString() }}</div>
+                  <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                    <svg class="self-center flex-shrink-0 h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="sr-only">Increased by</span>
+                    18%
+                  </div>
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts and Analytics -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <!-- Revenue Chart -->
-        <div class="card p-6">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Monthly Revenue</h3>
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Revenue Trends</h3>
+            <select v-model="revenueTimeframe" @change="updateRevenueChart" class="text-sm border-gray-300 rounded-md">
+              <option value="7">Last 7 days</option>
+              <option value="30">Last 30 days</option>
+              <option value="90">Last 3 months</option>
+            </select>
+          </div>
           <div class="h-64">
             <canvas ref="revenueChart"></canvas>
           </div>
         </div>
 
         <!-- User Growth Chart -->
-        <div class="card p-6">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">User Growth</h3>
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">User Growth</h3>
+            <select v-model="userTimeframe" @change="updateUserChart" class="text-sm border-gray-300 rounded-md">
+              <option value="7">Last 7 days</option>
+              <option value="30">Last 30 days</option>
+              <option value="90">Last 3 months</option>
+            </select>
+          </div>
           <div class="h-64">
             <canvas ref="userChart"></canvas>
           </div>
         </div>
       </div>
 
-      <!-- Management Sections -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Company Management -->
-        <div class="card p-6">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold text-gray-900">Company Requests</h3>
-            <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">{{ pendingCompanies.length }} Pending</span>
+      <!-- Recent Activity and Quick Actions -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Recent Activity -->
+        <div class="lg:col-span-2 bg-white rounded-lg shadow">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
           </div>
-          
-          <div class="space-y-4 max-h-96 overflow-y-auto">
-            <div v-for="company in pendingCompanies" :key="company.id" class="border border-gray-200 rounded-lg p-4">
-              <div class="flex items-start justify-between">
-                <div>
-                  <h4 class="font-semibold text-gray-900">{{ company.companyName }}</h4>
-                  <p class="text-sm text-gray-600">{{ company.industry }} • {{ company.companySize }}</p>
-                  <p class="text-sm text-gray-500">Contact: {{ company.contactPerson }}</p>
-                  <p class="text-sm text-gray-500">{{ company.email }}</p>
-                </div>
-                <div class="flex space-x-2">
-                  <button @click="approveCompany(company.id)" class="bg-green-500 text-white text-xs px-3 py-1 rounded hover:bg-green-600">
-                    Approve
-                  </button>
-                  <button @click="rejectCompany(company.id)" class="bg-red-500 text-white text-xs px-3 py-1 rounded hover:bg-red-600">
-                    Reject
-                  </button>
-                </div>
-              </div>
+          <div class="p-6">
+            <div class="flow-root">
+              <ul class="-mb-8">
+                <li v-for="(activity, index) in recentActivity" :key="activity.id">
+                  <div class="relative pb-8" :class="index === recentActivity.length - 1 ? '' : 'pb-8'">
+                    <span v-if="index !== recentActivity.length - 1" class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"></span>
+                    <div class="relative flex space-x-3">
+                      <div>
+                        <span :class="activity.iconBg" class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white">
+                          <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="activity.iconPath"></path>
+                          </svg>
+                        </span>
+                      </div>
+                      <div class="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt class="text-sm font-medium text-gray-500">{{ activity.time }}</dt>
+                          <dd class="text-sm font-medium text-gray-900">{{ activity.description }}</dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
 
-        <!-- Payment Management -->
-        <div class="card p-6">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Payments</h3>
-          
-          <div class="space-y-4 max-h-96 overflow-y-auto">
-            <div v-for="payment in recentPayments" :key="payment.id" class="border border-gray-200 rounded-lg p-4">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h4 class="font-semibold text-gray-900">{{ payment.customerName }}</h4>
-                  <p class="text-sm text-gray-600">{{ payment.type }} • {{ payment.plan }}</p>
-                  <p class="text-sm text-gray-500">{{ payment.date }}</p>
-                </div>
-                <div class="text-right">
-                  <div class="font-bold text-green-600">{{ payment.amount }} EGP</div>
-                  <div class="text-xs text-gray-500">{{ payment.method }}</div>
-                </div>
-              </div>
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Quick Actions</h3>
+          </div>
+          <div class="p-6">
+            <div class="space-y-4">
+              <button v-for="action in quickActions" :key="action.name" @click="action.action" :class="action.color" class="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="action.icon"></path>
+                </svg>
+                {{ action.name }}
+              </button>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Student Management -->
-      <div class="card p-6 mt-8">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-900">Student Management</h3>
-          <div class="flex space-x-2">
-            <input 
-              type="text" 
-              v-model="studentSearch"
-              placeholder="Search students..."
-              class="input-field w-64"
-            />
-            <button class="btn-primary">Export Data</button>
-          </div>
-        </div>
-        
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">University</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assessments</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subscription</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="student in filteredStudents" :key="student.id">
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center">
-                    <div class="w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center">
-                      <span class="text-white font-bold text-sm">{{ student.name.charAt(0) }}</span>
-                    </div>
-                    <div class="ml-4">
-                      <div class="text-sm font-medium text-gray-900">{{ student.name }}</div>
-                      <div class="text-sm text-gray-500">{{ student.email }}</div>
-                    </div>
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {{ student.university || 'Not specified' }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{ student.completedAssessments }}/3</div>
-                  <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="bg-primary-500 h-2 rounded-full" :style="{ width: (student.completedAssessments / 3) * 100 + '%' }"></div>
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span :class="student.subscription === 'premium' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
-                    {{ student.subscription }}
-                  </span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button @click="viewStudent(student.id)" class="text-primary-600 hover:text-primary-900 mr-3">View</button>
-                  <button @click="deleteStudent(student.id)" class="text-red-600 hover:text-red-900">Delete</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+    </main>
+  </AdminSidebar>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted, nextTick, onUnmounted } from 'vue'
+import { Chart, registerables } from 'chart.js'
 
-// Check authentication
-onMounted(() => {
-  const isAuthenticated = localStorage.getItem('adminAuth')
-  if (!isAuthenticated) {
-    navigateTo('/admin/login')
-  }
-  
-  // Initialize charts
-  initializeCharts()
-})
+// Register Chart.js components
+Chart.register(...registerables)
 
-const studentSearch = ref('')
+// Reactive data
+const revenueChart = ref(null)
+const userChart = ref(null)
+const revenueTimeframe = ref('30')
+const userTimeframe = ref('30')
 
+// Chart instances
+let revenueChartInstance = null
+let userChartInstance = null
+
+// Stats data
 const stats = ref({
-  totalStudents: 2847,
+  totalUsers: 2847,
   activeCompanies: 156,
-  monthlyRevenue: 142500,
-  totalAssessments: 8541
+  monthlyRevenue: 125000,
+  totalAssessments: 1234
 })
 
-const pendingCompanies = ref([
+// Recent activity data
+const recentActivity = ref([
   {
     id: 1,
-    companyName: 'TechStart Solutions',
-    industry: 'Technology',
-    companySize: '11-50',
-    contactPerson: 'Ahmed Hassan',
-    email: 'ahmed@techstart.com'
+    description: 'New user registration: Ahmed Mohamed',
+    time: '2 minutes ago',
+    iconBg: 'bg-blue-500',
+    iconPath: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
   },
   {
     id: 2,
-    companyName: 'FinanceHub Egypt',
-    industry: 'Finance',
-    companySize: '51-200',
-    contactPerson: 'Sara Mohamed',
-    email: 'sara@financehub.com'
+    description: 'Company subscription: TechCorp Egypt',
+    time: '15 minutes ago',
+    iconBg: 'bg-green-500',
+    iconPath: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0h2M7 7h10M7 11h10M7 15h10'
   },
   {
     id: 3,
-    companyName: 'HealthTech Innovations',
-    industry: 'Healthcare',
-    companySize: '1-10',
-    contactPerson: 'Mohamed Ali',
-    email: 'mohamed@healthtech.com'
-  }
-])
-
-const recentPayments = ref([
-  {
-    id: 1,
-    customerName: 'Ahmed Hassan',
-    type: 'Individual',
-    plan: 'Premium',
-    amount: 500,
-    method: 'Visa',
-    date: '2025-01-15'
-  },
-  {
-    id: 2,
-    customerName: 'TechCorp Inc.',
-    type: 'Business',
-    plan: 'Enterprise',
-    amount: 25000,
-    method: 'Bank Transfer',
-    date: '2025-01-14'
-  },
-  {
-    id: 3,
-    customerName: 'Sara Mohamed',
-    type: 'Individual',
-    plan: 'Premium',
-    amount: 500,
-    method: 'Fawry',
-    date: '2025-01-13'
-  }
-])
-
-const students = ref([
-  {
-    id: 1,
-    name: 'Ahmed Hassan',
-    email: 'ahmed@example.com',
-    university: 'Cairo University',
-    completedAssessments: 3,
-    subscription: 'premium'
-  },
-  {
-    id: 2,
-    name: 'Sara Mohamed',
-    email: 'sara@example.com',
-    university: 'Alexandria University',
-    completedAssessments: 2,
-    subscription: 'free'
-  },
-  {
-    id: 3,
-    name: 'Mohamed Ali',
-    email: 'mohamed@example.com',
-    university: 'AUC',
-    completedAssessments: 1,
-    subscription: 'premium'
+    description: 'Assessment completed: Personality Test',
+    time: '1 hour ago',
+    iconBg: 'bg-purple-500',
+    iconPath: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
   },
   {
     id: 4,
-    name: 'Fatima Ahmed',
-    email: 'fatima@example.com',
-    university: 'Ain Shams University',
-    completedAssessments: 3,
-    subscription: 'free'
+    description: 'Payment processed: 500 EGP',
+    time: '2 hours ago',
+    iconBg: 'bg-yellow-500',
+    iconPath: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'
+  },
+  {
+    id: 5,
+    description: 'System backup completed',
+    time: '3 hours ago',
+    iconBg: 'bg-gray-500',
+    iconPath: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
   }
 ])
 
-const filteredStudents = computed(() => {
-  if (!studentSearch.value) return students.value
-  return students.value.filter(student => 
-    student.name.toLowerCase().includes(studentSearch.value.toLowerCase()) ||
-    student.email.toLowerCase().includes(studentSearch.value.toLowerCase()) ||
-    (student.university && student.university.toLowerCase().includes(studentSearch.value.toLowerCase()))
-  )
-})
-
-const approveCompany = (id) => {
-  const index = pendingCompanies.value.findIndex(c => c.id === id)
-  if (index > -1) {
-    pendingCompanies.value.splice(index, 1)
-    stats.value.activeCompanies++
-    alert('Company approved successfully!')
-  }
-}
-
-const rejectCompany = (id) => {
-  const index = pendingCompanies.value.findIndex(c => c.id === id)
-  if (index > -1) {
-    pendingCompanies.value.splice(index, 1)
-    alert('Company rejected.')
-  }
-}
-
-const viewStudent = (id) => {
-  alert(`Viewing student details for ID: ${id}`)
-}
-
-const deleteStudent = (id) => {
-  if (confirm('Are you sure you want to delete this student?')) {
-    const index = students.value.findIndex(s => s.id === id)
-    if (index > -1) {
-      students.value.splice(index, 1)
-      stats.value.totalStudents--
-    }
-  }
-}
-
-const logout = () => {
-  localStorage.removeItem('adminAuth')
-  navigateTo('/admin/login')
-}
-
-const revenueChart = ref(null)
-const userChart = ref(null)
-
-const initializeCharts = () => {
-  // Revenue Chart
-  if (revenueChart.value) {
-    const ctx = revenueChart.value.getContext('2d')
+// Chart data generators
+const generateRevenueData = (days) => {
+  const labels = []
+  const data = []
+  const today = new Date()
+  
+  for (let i = days - 1; i >= 0; i--) {
+    const date = new Date(today)
+    date.setDate(date.getDate() - i)
+    labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))
     
-    // Simple chart implementation (you can replace with Chart.js)
-    ctx.fillStyle = '#10b981'
-    ctx.fillRect(50, 200, 40, 50)
-    ctx.fillRect(100, 180, 40, 70)
-    ctx.fillRect(150, 160, 40, 90)
-    ctx.fillRect(200, 140, 40, 110)
-    ctx.fillRect(250, 120, 40, 130)
-    ctx.fillRect(300, 100, 40, 150)
-    
-    // Labels
-    ctx.fillStyle = '#374151'
-    ctx.font = '12px Arial'
-    ctx.fillText('Jan', 60, 270)
-    ctx.fillText('Feb', 110, 270)
-    ctx.fillText('Mar', 160, 270)
-    ctx.fillText('Apr', 210, 270)
-    ctx.fillText('May', 260, 270)
-    ctx.fillText('Jun', 310, 270)
+    // Generate realistic revenue data
+    const baseRevenue = 3000 + Math.random() * 2000
+    const weekendMultiplier = date.getDay() === 0 || date.getDay() === 6 ? 0.7 : 1
+    data.push(Math.round(baseRevenue * weekendMultiplier))
   }
   
-  // User Growth Chart
-  if (userChart.value) {
-    const ctx = userChart.value.getContext('2d')
-    
-    ctx.strokeStyle = '#3b82f6'
-    ctx.lineWidth = 3
-    ctx.beginPath()
-    ctx.moveTo(50, 200)
-    ctx.lineTo(100, 180)
-    ctx.lineTo(150, 160)
-    ctx.lineTo(200, 140)
-    ctx.lineTo(250, 120)
-    ctx.lineTo(300, 100)
-    ctx.stroke()
-    
-    // Data points
-    ctx.fillStyle = '#3b82f6'
-    const points = [[50, 200], [100, 180], [150, 160], [200, 140], [250, 120], [300, 100]]
-    points.forEach(([x, y]) => {
-      ctx.beginPath()
-      ctx.arc(x, y, 4, 0, 2 * Math.PI)
-      ctx.fill()
-    })
-  }
+  return { labels, data }
 }
 
-useHead({
-  title: 'Admin Dashboard - ProGrowth'
+const generateUserData = (days) => {
+  const labels = []
+  const data = []
+  const today = new Date()
+  
+  for (let i = days - 1; i >= 0; i--) {
+    const date = new Date(today)
+    date.setDate(date.getDate() - i)
+    labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))
+    
+    // Generate realistic user growth data
+    const baseUsers = 15 + Math.random() * 25
+    data.push(Math.round(baseUsers))
+  }
+  
+  return { labels, data }
+}
+
+// Chart creation functions
+const createRevenueChart = () => {
+  if (revenueChartInstance) {
+    revenueChartInstance.destroy()
+  }
+  
+  const { labels, data } = generateRevenueData(parseInt(revenueTimeframe.value))
+  
+  revenueChartInstance = new Chart(revenueChart.value, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Revenue (EGP)',
+        data,
+        borderColor: 'rgb(59, 130, 246)',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: 'rgb(59, 130, 246)',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: 'rgba(0, 0, 0, 0.1)'
+          },
+          ticks: {
+            callback: function(value) {
+              return value.toLocaleString() + ' EGP'
+            }
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          }
+        }
+      },
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      }
+    }
+  })
+}
+
+const createUserChart = () => {
+  if (userChartInstance) {
+    userChartInstance.destroy()
+  }
+  
+  const { labels, data } = generateUserData(parseInt(userTimeframe.value))
+  
+  userChartInstance = new Chart(userChart.value, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'New Users',
+        data,
+        backgroundColor: 'rgba(34, 197, 94, 0.8)',
+        borderColor: 'rgb(34, 197, 94)',
+        borderWidth: 1,
+        borderRadius: 4,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: 'rgba(0, 0, 0, 0.1)'
+          },
+          ticks: {
+            stepSize: 5
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          }
+        }
+      }
+    }
+  })
+}
+
+// Chart update functions
+const updateRevenueChart = () => {
+  createRevenueChart()
+}
+
+const updateUserChart = () => {
+  createUserChart()
+}
+
+// Lifecycle hooks
+onMounted(async () => {
+  await nextTick()
+  createRevenueChart()
+  createUserChart()
 })
+
+// Cleanup on unmount
+onUnmounted(() => {
+  if (revenueChartInstance) {
+    revenueChartInstance.destroy()
+  }
+  if (userChartInstance) {
+    userChartInstance.destroy()
+  }
+})
+
+// Quick Actions
+const quickActions = [
+  {
+    name: 'Add New User',
+    icon: 'M12 6v6m0 0v6m0-6h6m-6 0H6',
+    color: 'bg-blue-600 hover:bg-blue-700',
+    action: () => {
+      // Navigate to add user page or open modal
+      console.log('Add new user')
+    }
+  },
+  {
+    name: 'Approve Company',
+    icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0h2M7 7h10M7 11h10M7 15h10',
+    color: 'bg-green-600 hover:bg-green-700',
+    action: () => {
+      // Navigate to company approval page
+      console.log('Approve company')
+    }
+  },
+  {
+    name: 'View Analytics',
+    icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
+    color: 'bg-purple-600 hover:bg-purple-700',
+    action: () => {
+      // Navigate to analytics page
+      console.log('View analytics')
+    }
+  },
+  {
+    name: 'System Health',
+    icon: 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+    color: 'bg-yellow-600 hover:bg-yellow-700',
+    action: () => {
+      // Navigate to system health page
+      console.log('System health')
+    }
+  }
+]
 </script>

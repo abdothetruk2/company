@@ -77,7 +77,7 @@
         <!-- Enhanced Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16 animate-slide-up" style="animation-delay: 1s;">
           <NuxtLink 
-            to="/auth/signup" 
+            to="/register/individual" 
             class="group relative bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold py-4 px-8 rounded-xl text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl min-w-[280px] overflow-hidden"
           >
             <!-- Button Background Animation -->
@@ -98,7 +98,7 @@
           </NuxtLink>
 
           <NuxtLink 
-            to="/auth/signup" 
+            to="/business/partnership" 
             class="group relative bg-white hover:bg-gray-50 text-primary-600 font-semibold py-4 px-8 rounded-xl text-lg border-2 border-primary-200 hover:border-primary-300 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl min-w-[280px] overflow-hidden"
           >
             <!-- Button Background Animation -->

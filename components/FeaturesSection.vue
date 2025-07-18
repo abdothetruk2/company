@@ -175,7 +175,7 @@
           <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
             Complete all three assessments to get your comprehensive career analysis and personalized job recommendations.
           </p>
-          <NuxtLink to="/auth/signup" class="btn-primary text-lg px-8 py-3 inline-flex items-center group">
+          <NuxtLink to="/register/individual" class="btn-primary text-lg px-8 py-3 inline-flex items-center group">
             <span>Start Your Assessment</span>
             <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />

@@ -1,0 +1,87 @@
+<script setup>
+import { ref } from 'vue'
+
+// Meta
+definePageMeta({
+  layout: false
+})
+
+// Reactive data
+const form = ref({
+  email: '',
+  password: '',
+  rememberMe: false
+})
+
+const loading = ref(false)
+const error = ref('')
+const success = ref('')
+
+// Handle login
+const handleLogin = async () => {
+  try {
+    loading.value = true
+    error.value = ''
+    
+    const response = await $fetch('/api/auth/login', {
+      method: 'POST',
+      body: {
+        email: form.value.email,
+        password: form.value.password
+      }
+    })
+    
+    if (response.success && response.token) {
+      success.value = 'Login successful! Redirecting...'
+      
+      // Set the JWT token in cookie with proper configuration
+      const token = useCookie('jwt', {
+        default: () => null,
+        maxAge: form.value.rememberMe ? 60 * 60 * 24 * 7 : 60 * 60 * 24, // 7 days or 1 day
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax'
+      })
+      
+      token.value = response.token
+      
+      // Wait a moment for cookie to be set, then redirect
+      await nextTick()
+      setTimeout(() => {
+        navigateTo('/profile')
+      }, 500)
+    } else {
+      error.value = 'Invalid response from server'
+    }
+    
+  } catch (err) {
+    console.error('Login error:', err)
+    error.value = err.data?.message || 'Login failed. Please try again.'
+  } finally {
+    loading.value = false
+  }
+}
+
+// Check if already logged in
+onMounted(async () => {
+  const token = useCookie('jwt')
+  
+  if (token.value) {
+    try {
+      // Verify the token is still valid
+      await $fetch('/api/auth/verify', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token.value}`
+        }
+      })
+      
+      // Token is valid, redirect to profile
+      navigateTo('/profile')
+    } catch (error) {
+      // Token is invalid, clear it
+      token.value = null
+    }
+  }
+})
+</script>

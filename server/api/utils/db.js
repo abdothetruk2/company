@@ -1,40 +1,38 @@
 import mongoose from 'mongoose'
 
-const MONGODB_URI = process.env.MONGODB_URI
+let isConnected = false
 
-if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable')
-}
-
-let cached = global.mongoose
-
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null }
-}
-
-async function connectDB() {
-  if (cached.conn) {
-    return cached.conn
-  }
-
-  if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    }
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose
-    })
+export const connectDB = async () => {
+  if (isConnected) {
+    return
   }
 
   try {
-    cached.conn = await cached.promise
-  } catch (e) {
-    cached.promise = null
-    throw e
+    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/progrowth'
+    
+    await mongoose.connect(mongoUri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    
+    isConnected = true
+    console.log('MongoDB connected successfully')
+  } catch (error) {
+    console.error('MongoDB connection error:', error)
+    throw error
   }
-
-  return cached.conn
 }
 
-export default connectDB
+export const disconnectDB = async () => {
+  if (!isConnected) {
+    return
+  }
+
+  try {
+    await mongoose.disconnect()
+    isConnected = false
+    console.log('MongoDB disconnected')
+  } catch (error) {
+    console.error('MongoDB disconnection error:', error)
+  }
+}

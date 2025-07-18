@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
   gender: {
     type: String,
     required: true,
-    enum: ['male', 'female', 'other']
+    enum: ["male", "female", "other"]
   },
   age: {
     type: Number,
@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
   },
   university: {
     type: String,
-    default: ''
+    default: ""
   },
   idCardPath: {
     type: String,
@@ -70,13 +70,13 @@ const userSchema = new mongoose.Schema({
   subscription: {
     status: {
       type: String,
-      enum: ['inactive', 'active', 'expired', 'cancelled'],
-      default: 'inactive'
+      enum: ["inactive", "active", "expired", "cancelled"],
+      default: "inactive"
     },
     plan: {
       type: String,
-      enum: ['free', 'premium'],
-      default: 'free'
+      enum: ["free", "premium"],
+      default: "free"
     },
     startDate: Date,
     endDate: Date,
@@ -102,4 +102,6 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 })
 
-export default mongoose.models.User || mongoose.model('User', userSchema)
+const User = mongoose.models.User || mongoose.model('User', userSchema)
+
+export default User
